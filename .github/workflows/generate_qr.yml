@@ -1,17 +1,8 @@
 name: Generate QR Code
 
 on:
-  workflow_dispatch:
-    inputs:
-      details:
-        description: 'Text or URL to encode into QR'
-        required: true
-      qr_name:
-        description: 'File name for the QR (no extension)'
-        required: true
-      item_id:
-        description: 'SharePoint item ID'
-        required: true
+  repository_dispatch:
+    types: [generate-qr]
 
 jobs:
   generate:
@@ -31,11 +22,11 @@ jobs:
       - name: Generate QR code
         run: |
           python generate.py \
-          '{"details":"${{ inputs.details }}","qr_name":"${{ inputs.qr_name }}"}'
+          '{"details":"${{ github.event.client_payload.details }}","qr_name":"${{ github.event.client_payload.qr_name }}"}'
 
       - name: Upload QR as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qr-${{ inputs.item_id }}
-          path: ${{ inputs.qr_name }}.png
+          name: qr-${{ github.event.client_payload.item_id }}
+          path: ${{ github.event.client_payload.qr_name }}.png
           retention-days: 3
