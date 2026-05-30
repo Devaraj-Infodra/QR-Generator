@@ -21,8 +21,7 @@ jobs:
 
       - name: Generate QR code
         run: |
-          python generate.py \
-          '{"details":"${{ github.event.client_payload.details }}","qr_name":"${{ github.event.client_payload.qr_name }}"}'
+          python generate.py '${{ toJson(github.event.client_payload) }}'
 
       - name: Upload QR as artifact
         uses: actions/upload-artifact@v4
