@@ -23,7 +23,6 @@ jobs:
         env:
           TENANT_ID: ${{ secrets.TENANT_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          SP_USERNAME: ${{ secrets.SP_USERNAME }}
-          SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
           python upload_qr.py '${{ toJson(github.event.client_payload) }}'
