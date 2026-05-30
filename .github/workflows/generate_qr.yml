@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [generate-qr]
 
+permissions:
+  contents: write
+
 jobs:
   generate:
     runs-on: ubuntu-latest
