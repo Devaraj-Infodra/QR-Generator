@@ -17,15 +17,13 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install qrcode[pil]
+        run: pip install qrcode[pil] requests
 
-      - name: Generate QR code
+      - name: Generate and upload QR to SharePoint
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          SHAREPOINT_SITE: ${{ secrets.SHAREPOINT_SITE }}
         run: |
-          python generate.py '${{ toJson(github.event.client_payload) }}'
-
-      - name: Upload QR as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: qr-${{ github.event.client_payload.item_id }}
-          path: ${{ github.event.client_payload.qr_name }}.png
-          retention-days: 3
+          python upload_qr.py '${{ toJson(github.event.client_payload) }}'
