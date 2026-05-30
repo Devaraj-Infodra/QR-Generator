@@ -1,0 +1,41 @@
+name: Generate QR Code
+
+on:
+  workflow_dispatch:
+    inputs:
+      details:
+        description: 'Text or URL to encode into QR'
+        required: true
+      qr_name:
+        description: 'File name for the QR (no extension)'
+        required: true
+      item_id:
+        description: 'SharePoint item ID'
+        required: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install qrcode[pil]
+
+      - name: Generate QR code
+        run: |
+          python generate.py \
+          '{"details":"${{ inputs.details }}","qr_name":"${{ inputs.qr_name }}"}'
+
+      - name: Upload QR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qr-${{ inputs.item_id }}
+          path: ${{ inputs.qr_name }}.png
+          retention-days: 3
