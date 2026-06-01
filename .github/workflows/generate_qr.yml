@@ -20,9 +20,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install qrcode[pil]
+        run: pip install qrcode[pil] requests
 
-      - name: Generate QR
+      - name: Generate QR + Send SMS
+        env:
+          FAST2SMS_API_KEY: ${{ secrets.FAST2SMS_API_KEY }}
         run: python upload_qr.py '${{ toJson(github.event.client_payload) }}'
 
       - name: Commit and push QR image
