@@ -20,12 +20,14 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install qrcode[pil] requests
+        run: pip install qrcode[pil] twilio
 
       - name: Generate QR + Send SMS
         env:
-          FAST2SMS_API_KEY: ${{ secrets.FAST2SMS_API_KEY }}
-        run: python upload_qr.py '${{ toJson(github.event.client_payload) }}'
+          TWILIO_SID: ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
+        run: python upload_qr.py '${{ toJson(github.event.client_payload) }}' }}'
 
       - name: Commit and push QR image
         run: |

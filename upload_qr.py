@@ -1,38 +1,30 @@
-import qrcode, sys, json, os, requests
+import qrcode, sys, json, os
+from twilio.rest import Client
 
-def send_sms(phone):
-    api_key = os.environ['FAST2SMS_API_KEY']
+def send_sms(phone_field):
+    account_sid = os.environ['TWILIO_SID']
+    auth_token = os.environ['TWILIO_TOKEN']
+    from_number = os.environ['TWILIO_FROM']
 
-    if phone.startswith('+91'):
-        phone = phone[3:]
-    elif phone.startswith('+'):
-        phone = phone[1:]
+    client = Client(account_sid, auth_token)
+    numbers = [p.strip() for p in phone_field.split(',')]
 
-    response = requests.post(
-        'https://www.fast2sms.com/dev/bulkV2',
-        headers={
-            'authorization': api_key,
-            'Content-Type': 'application/json'
-        },
-        json={
-            'route': 'q',
-            'message': 'hi',
-            'language': 'english',
-            'flash': 0,
-            'numbers': phone
-        }
-    )
-    print(f"SMS status: {response.status_code}")
-    print(f"SMS response: {response.text}")
+    for phone in numbers:
+        if not phone.startswith('+'):
+            phone = '+91' + phone
+        try:
+            message = client.messages.create(
+                body='hi',
+                from_=from_number,
+                to=phone
+            )
+            print(f"SMS sent to {phone} — SID: {message.sid}")
+        except Exception as e:
+            print(f"Failed to send to {phone}: {e}")
 
 def generate_qr(payload):
     qr_text = f"Name: {payload['title']}\nID: {payload['details']}\nPhone: {payload['phone']}"
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_H,
-        box_size=10,
-        border=4
-    )
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=10, border=4)
     qr.add_data(qr_text)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
