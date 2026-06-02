@@ -14,7 +14,7 @@ def send_sms(phone_field):
             phone = '+91' + phone
         try:
             message = client.messages.create(
-                body='hi',
+                body='Hi',
                 from_=from_number,
                 to=phone
             )
