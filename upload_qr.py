@@ -23,7 +23,7 @@ def send_sms(phone_field):
             print(f"Failed to send to {phone}: {e}")
 
 def generate_qr(payload):
-    qr_text = f"Name: {payload['title']}\nID: {payload['details']}\nPhone: {payload['phone']}"
+    qr_text = f"https://5hd1pdf1-5000.inc1.app.github.dev/scan?phone={payload['phone']}"
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=10, border=4)
     qr.add_data(qr_text)
     qr.make(fit=True)
