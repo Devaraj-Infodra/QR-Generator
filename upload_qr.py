@@ -48,8 +48,6 @@ def generate_qr(payload):
     print(f"QR saved: {path}")
     print(f"URL: {raw_url}")
 
-    send_sms(payload['phone'])
-
     return raw_url
 
 if __name__ == "__main__":
