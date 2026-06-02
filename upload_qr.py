@@ -9,9 +9,9 @@ def send_sms(phone_field):
     auth_token = os.environ['TWILIO_TOKEN']
     from_number = os.environ['TWILIO_FROM']
     client = Client(account_sid, auth_token)
-    
-    # Split handles single strings or comma-separated inputs safely
+    # Ensure phone_field is treated as a string and handle spaces
     numbers = [p.strip() for p in str(phone_field).split(',')]
+
     for phone in numbers:
         if not phone.startswith('+'):
             phone = '+91' + phone
@@ -26,10 +26,11 @@ def send_sms(phone_field):
             print(f"Failed to send to {phone}: {e}")
 
 def generate_qr(payload):
-    # Change this to your actual Render app URL after creating it in Step 3
+    # 1. Dynamically read your Render Web Service URL from an environment variable.
+    # Replace the fallback link with your actual Render URL once deployment finishes.
     base_url = os.environ.get("FLASK_SERVER_URL", "https://your-render-app-name.onrender.com")
     
-    # Secure tracking using the SharePoint item ID
+    # 2. Secure QR payload using the unique SharePoint item ID instead of exposing plain phone numbers
     qr_text = f"{base_url}/scan?id={payload['item_id']}"
     
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=10, border=4)
@@ -44,14 +45,16 @@ def generate_qr(payload):
     img.save(path)
     
     raw_url = f"https://raw.githubusercontent.com/Devaraj-Infodra/QR-Generator/main/{path}"
-    
+
+    # 3. Add the 'phone' number here so it saves to the repository metadata
     result = {
         "item_id": payload["item_id"],
         "qr_name": payload["qr_name"],
-        "phone": payload["phone"],  # Stored securely in JSON to lookup during scan
+        "phone": payload["phone"], 
         "qr_url": raw_url
     }
     
+    # Save the file using item_id as the name for seamless lookups by the Flask server
     with open(f"results/{payload['item_id']}.json", "w") as f:
         json.dump(result, f)
         
