@@ -27,7 +27,8 @@ jobs:
           TWILIO_SID: ${{ secrets.TWILIO_SID }}
           TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
           TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
-        run: python upload_qr.py '${{ toJson(github.event.client_payload) }}' }}'
+        run: python upload_qr.py '${{ toJson(github.event.client_payload) }}'
+
 
       - name: Commit and push QR image
         run: |
