@@ -1,5 +1,6 @@
 flask
-requests
-twilio
-qrcode[pil]
 gunicorn
+twilio
+requests
+qrcode[pil]
+pillow
