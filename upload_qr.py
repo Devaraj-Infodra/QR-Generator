@@ -29,7 +29,7 @@ def generate_qr(payload):
     phone   = payload["phone"]
 
     # QR encodes the scan URL — scanning this triggers SMS
-    scan_url = f"{SERVER_URL}/scan?id={item_id}"
+    scan_url = f"{SERVER_URL}/scan?id={item_id}&name={payload['title']}&phone={payload['phone']}"
 
     qr = qrcode.QRCode(
         version=1,
