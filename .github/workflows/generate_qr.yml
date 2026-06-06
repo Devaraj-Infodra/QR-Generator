@@ -1,12 +1,9 @@
 name: Generate QR Code
-
 on:
   repository_dispatch:
     types: [generate-qr]
-
 permissions:
   contents: write
-
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -20,17 +17,12 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install qrcode[pil] twilio
+        run: pip install qrcode[pil]
 
-      - name: Generate QR + Send SMS
-        env:
-          TWILIO_SID: ${{ secrets.TWILIO_SID }}
-          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
-          TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
+      - name: Generate QR
         run: python upload_qr.py '${{ toJson(github.event.client_payload) }}'
 
-
-      - name: Commit and push QR image
+      - name: Commit and push
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
