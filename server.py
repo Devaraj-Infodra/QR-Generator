@@ -221,29 +221,29 @@ def confirm():
             return "Not found", 404
 
         data = response.json()
-        phone_number = data.get("phone")
+        phone = data.get("phone")
 
-        if phone_number:
-            account_sid = os.environ['TWILIO_SID']
-            auth_token  = os.environ['TWILIO_TOKEN']
-            from_number = os.environ['TWILIO_FROM']
-            client = Client(account_sid, auth_token)
-
-            numbers = [p.strip() for p in phone_number.split(',')]
-            for phone in numbers:
-                if not phone.startswith('+'):
-                    phone = '+91' + phone
-                client.messages.create(
-                    body='hi',
-                    from_=from_number,
-                    to=phone
+        if phone:
+            api_key = os.environ['INFINIREACH_API_KEY']
+            numbers = [p.strip() for p in phone.split(',')]
+            for p in numbers:
+                if not p.startswith('+'):
+                    p = '+91' + p
+                requests.post(
+                    "https://api.infinireach.io/api/v1/messages",
+                    headers={
+                        "X-API-Key": api_key,
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "to": p,
+                        "message": "Someone wants to contact you!"
+                    }
                 )
-            return "OK", 200
-        return "No phone", 400
+        return "OK", 200
 
     except Exception as e:
         return f"Error: {str(e)}", 500
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

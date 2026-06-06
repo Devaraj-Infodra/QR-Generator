@@ -1,6 +1,5 @@
 flask
 gunicorn
-twilio
 requests
 qrcode[pil]
 pillow
