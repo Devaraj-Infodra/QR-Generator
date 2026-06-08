@@ -169,7 +169,7 @@ def confirm():
                     headers={"x-api-key": api_key},
                     json={
                         "receivers": [formatted],
-                        "message": "Someone wants to contact you!"
+                        "message": "Hi!"
                     }
                 )
 
