@@ -208,7 +208,6 @@ def scan():
     except Exception as e:
         return f"Error: {str(e)}", 500
 
-
 @app.route("/confirm")
 def confirm():
     item_id = request.args.get("id")
@@ -224,19 +223,17 @@ def confirm():
         phone = data.get("phone")
 
         if phone:
-            api_key = os.environ['INFINIREACH_API_KEY']
+            api_key = os.environ['TEXTBEE_API_KEY']
+            device_id = os.environ['TEXTBEE_DEVICE_ID']
             numbers = [p.strip() for p in phone.split(',')]
             for p in numbers:
                 if not p.startswith('+'):
                     p = '+91' + p
                 requests.post(
-                    "https://api.infinireach.io/api/v1/messages",
-                    headers={
-                        "X-API-Key": api_key,
-                        "Content-Type": "application/json"
-                    },
+                    f"https://api.textbee.dev/api/v1/gateway/devices/{device_id}/sendSMS",
+                    headers={"x-api-key": api_key},
                     json={
-                        "to": p,
+                        "receivers": [p],
                         "message": "Someone wants to contact you!"
                     }
                 )
@@ -244,7 +241,6 @@ def confirm():
 
     except Exception as e:
         return f"Error: {str(e)}", 500
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
